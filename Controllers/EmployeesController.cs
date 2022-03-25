@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using EmpCrud.Models;
+using System.IO;
 
 namespace EmpCrud.Controllers
 {
@@ -31,7 +32,6 @@ namespace EmpCrud.Controllers
             return View(await _context.employees.ToListAsync());
         }
 
-        // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -49,21 +49,36 @@ namespace EmpCrud.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Create
+
         public IActionResult Create()
         {
             return View();
         }
+        public byte[] GetImage(string sBase)
+        {
+            byte[] bytes = null;
+            if (!string.IsNullOrEmpty(sBase))
+            {
+                bytes = Convert.FromBase64String(sBase);
+            }
+            return bytes;
+        }
 
-        // POST: Employees/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,FirstName,LastName,PhoneNumber,DateOfBirth,Gender,Address,Address2,Zip,Age,CreatedOn")] Employee employee)
+        public async Task<IActionResult> Create(Employee employee)
         {
             if (ModelState.IsValid)
             {
+                if (employee.ImageFile != null && employee.ImageFile.Length > 0)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await employee.ImageFile.CopyToAsync(ms);
+                        employee.Photo = ms.ToArray();
+
+                    }
+                }
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -71,7 +86,7 @@ namespace EmpCrud.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Edit/5
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -87,12 +102,10 @@ namespace EmpCrud.Controllers
             return View(employee);
         }
 
-        // POST: Employees/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,FirstName,LastName,PhoneNumber,DateOfBirth,Gender,Address,Address2,Zip,Age,Photo,CreatedOn")] Employee employee)
+        public async Task<IActionResult> Edit(int id,Employee employee)
         {
             if (id != employee.Id)
             {
@@ -103,6 +116,15 @@ namespace EmpCrud.Controllers
             {
                 try
                 {
+                    if (employee.ImageFile != null && employee.ImageFile.Length > 0)
+                    {
+                        using (var ms = new MemoryStream())
+                        {
+                            await employee.ImageFile.CopyToAsync(ms);
+                            employee.Photo = ms.ToArray();
+
+                        }
+                    }
                     _context.Update(employee);
                     await _context.SaveChangesAsync();
                 }
@@ -122,7 +144,7 @@ namespace EmpCrud.Controllers
             return View(employee);
         }
 
-        // GET: Employees/Delete/5
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +162,7 @@ namespace EmpCrud.Controllers
             return View(employee);
         }
 
-        // POST: Employees/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

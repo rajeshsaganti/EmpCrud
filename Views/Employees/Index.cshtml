@@ -89,7 +89,14 @@
                         @Html.DisplayFor(modelItem => item.Age)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Photo)
+                        @if (item.Photo == null)
+                        {
+                            <img class="img-profile rounded-circle" height="100" width="100" src="~/images/undraw_profile.svg" />
+                        }
+                        else
+                        {
+                            <img class="img-profile rounded-circle" height="100" width="100" src="data:image;base64,@System.Convert.ToBase64String(item.Photo)" />
+                        }
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CreatedOn)

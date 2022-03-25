@@ -32,7 +32,6 @@ namespace EmpCrud.Models
         public string Address2 { get; set; }
         public int Zip { get; set; }
         public int Age { get; set; }
-
         public byte[] Photo { get; set; }
         [NotMapped]
         [Display(Name = "ImageFile")]
