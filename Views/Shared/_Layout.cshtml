@@ -27,18 +27,23 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin View</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Employees List</a>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link text-dark dropdown-toggle" data-toggle="dropdown">Manage</a>
+                                <div class="dropdown-menu">
+                                    <a asp-area="" asp-controller="Departments" asp-action="Index" class="dropdown-item">Departments</a>
+                                    <a asp-area="" asp-controller="Employees" asp-action="Index" class="dropdown-item">Employees</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a asp-area="" asp-controller="Home" asp-action="Logout" class="dropdown-item">Logout</a>
+                                </div>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Departments List</a>
-                            </li>
-
                         }
-                        <li class="nav-item justify-content-end">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
-                        </li>
+
                     </ul>
+                        <ul class="navbar-nav flex-grow-1  justify-content-end">
+                            <li class="nav-item justify-content-end">
+                                <a class="nav-link btn btn-primary text-white" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+                            </li>
+                        </ul>
                     }
                     else
                     {
